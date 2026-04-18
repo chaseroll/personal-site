@@ -54,7 +54,7 @@ html, body { margin: 0; padding: 0; }
 
 html {
   font-family: ui-serif, "New York", "Charter", "Tiempos Text", Georgia, Cambria, "Times New Roman", Times, serif;
-  font-size: 16px;
+  font-size: 18px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
