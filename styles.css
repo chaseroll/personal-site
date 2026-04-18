@@ -1,0 +1,769 @@
+/* ==========================================================================
+   chaseroll.com — shared stylesheet
+   One file, no framework. Typography modeled after aratame.me.
+   ========================================================================== */
+
+/* --- Tokens ---------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  --fg:        #111111;
+  --bg:        #fafafa;
+  --gray-300:  #d1d5db;
+  --gray-400:  #9ca3af;
+  --gray-500:  #6b7280;
+  --gray-600:  #4b5563;
+  --gray-700:  #374151;
+
+  --fg-75:     rgba(17, 17, 17, 0.75);
+  --fg-60:     rgba(17, 17, 17, 0.60);
+  --fg-50:     rgba(17, 17, 17, 0.50);
+
+  --divider:      rgba(0, 0, 0, 0.09);
+  --divider-soft: rgba(0, 0, 0, 0.05);
+  --focus:        rgba(17, 17, 17, 0.25);
+  --rule-strong:  rgba(0, 0, 0, 0.14);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --fg:        #e5e5e5;
+  --bg:        #0a0a0a;
+  --gray-300:  #4b5563;
+  --gray-400:  #9ca3af;
+  --gray-500:  #a3a3a3;
+  --gray-600:  #d1d5db;
+  --gray-700:  #e5e7eb;
+
+  --fg-75:     rgba(229, 229, 229, 0.75);
+  --fg-60:     rgba(229, 229, 229, 0.60);
+  --fg-50:     rgba(229, 229, 229, 0.50);
+
+  --divider:      rgba(255, 255, 255, 0.09);
+  --divider-soft: rgba(255, 255, 255, 0.05);
+  --focus:        rgba(229, 229, 229, 0.30);
+  --rule-strong:  rgba(255, 255, 255, 0.14);
+}
+
+/* --- Reset / Base ---------------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+html {
+  font-family: ui-serif, "New York", "Charter", "Tiempos Text", Georgia, Cambria, "Times New Roman", Times, serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern", "liga", "calt";
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--fg);
+  background: var(--bg);
+  line-height: 1.6;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}
+
+::selection { background: var(--fg); color: var(--bg); }
+
+/* --- Layout containers ----------------------------------------------------- */
+
+.wrap {
+  width: 100%;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+@media (min-width: 640px) {
+  .wrap { padding-left: 2rem; padding-right: 2rem; }
+}
+
+main { flex: 1 1 auto; }
+
+/* --- Links (base) ---------------------------------------------------------- */
+
+a {
+  color: inherit;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: color 140ms ease, opacity 140ms ease;
+}
+a:hover { text-decoration: none; opacity: 0.7; }
+
+/* --- Theme toggle ---------------------------------------------------------- */
+
+.theme-toggle {
+  font: inherit;
+  font-size: 1.125rem;
+  color: var(--gray-400);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: color 140ms ease, transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  top: -1px;
+}
+.theme-toggle:hover { color: var(--fg); }
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+[data-theme="dark"] .theme-toggle { transform: rotate(180deg); }
+
+/* --- Inner-page top header ------------------------------------------------- */
+
+.site-header {
+  padding-top: 3rem;
+  padding-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.site-header .brand-group {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+.site-header .brand {
+  display: inline-flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+}
+/* Counter the global a:hover opacity fade — brand shouldn't dim on hover */
+.site-header .brand:hover { opacity: 1; }
+.site-header .brand .name {
+  font-size: 1.75rem;
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0;
+}
+@media (min-width: 640px) {
+  .site-header .brand .name { font-size: 2.25rem; }
+}
+.site-header .brand .sub {
+  font-size: 0.8125rem;
+  color: var(--gray-500);
+  font-style: italic;
+  margin-top: 0.375rem;
+  letter-spacing: 0;
+}
+.site-header nav {
+  display: flex;
+  gap: 1.25rem;
+  align-items: baseline;
+}
+.site-header nav a,
+.site-header nav button {
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--gray-500);
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  line-height: inherit;
+  transition: color 140ms ease;
+}
+.site-header nav a:hover,
+.site-header nav button:hover { color: var(--fg); opacity: 1; }
+.site-header nav button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* --- Home (splash) main ---------------------------------------------------- */
+
+main.home {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+.home-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 1.75rem;
+}
+.home-brand h1 {
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0;
+}
+@media (min-width: 640px) {
+  .home-brand h1 { font-size: 2.5rem; }
+}
+.home-bio {
+  font-size: 1.125rem;
+  color: var(--fg-75);
+  line-height: 1.7;
+  max-width: 34rem;
+  margin: 0 0 2.5rem;
+  text-wrap: pretty;
+}
+.home-bio a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--fg) 38%, transparent);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: color 140ms ease, text-decoration-color 140ms ease;
+}
+.home-bio a:hover {
+  color: var(--fg);
+  text-decoration-color: var(--fg);
+  opacity: 1;
+}
+
+.home-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 0 0 1.75rem;
+}
+.home-nav a {
+  font-size: 1rem;
+  color: var(--fg-60);
+  text-decoration: none;
+}
+.home-nav a:hover { color: var(--fg); opacity: 1; }
+
+.home-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+}
+.home-socials a {
+  font-size: 0.875rem;
+  color: var(--fg-50);
+  font-style: italic;
+  text-decoration: none;
+}
+.home-socials a:hover { color: var(--fg); opacity: 1; }
+
+/* --- Inner-page title block ------------------------------------------------ */
+
+.page-intro {
+  padding: 2.5rem 0 3rem;
+}
+.page-intro h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+}
+@media (min-width: 640px) {
+  .page-intro h1 { font-size: 1.875rem; }
+}
+.page-intro .kicker {
+  font-size: 0.875rem;
+  color: var(--gray-500);
+  margin: 0;
+  font-style: italic;
+  max-width: 36rem;
+  line-height: 1.6;
+}
+
+/* --- Resume sections ------------------------------------------------------- */
+
+section.group {
+  padding: 3.5rem 0 4rem;
+}
+section.group + section.group { border-top: 1px solid var(--divider); }
+section.group h1,
+section.group h2 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+  text-wrap: balance;
+}
+@media (min-width: 640px) {
+  section.group h1,
+  section.group h2 { font-size: 1.875rem; }
+}
+section.group .kicker {
+  font-size: 0.875rem;
+  color: var(--gray-500);
+  margin: 0 0 4rem;
+  font-style: italic;
+}
+section.group.no-kicker h1,
+section.group.no-kicker h2 { margin-bottom: 2.5rem; }
+
+/* --- Resume entries -------------------------------------------------------- */
+
+.entries {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+article.entry {
+  border-bottom: 1px solid var(--divider);
+  padding-bottom: 2.5rem;
+}
+article.entry:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+article.entry .head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin-bottom: 0.375rem;
+}
+article.entry h3 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.35;
+}
+article.entry .dates {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.6;
+}
+article.entry .role {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  margin: 0 0 0.875rem;
+  line-height: 1.5;
+}
+article.entry .desc {
+  font-size: 0.9375rem;
+  color: var(--gray-500);
+  line-height: 1.65;
+  margin: 0;
+  max-width: 38rem;
+  text-wrap: pretty;
+}
+article.entry .desc + .links { margin-top: 1.125rem; }
+article.entry .links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+}
+article.entry .links a {
+  font-size: 0.8125rem;
+  color: var(--gray-600);
+  text-decoration: none;
+}
+article.entry .links a:hover { color: var(--fg); opacity: 1; }
+
+section.group .other-line {
+  font-size: 0.9375rem;
+  color: var(--gray-500);
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* --- Notes (clipboard: year groups + tagged items) ------------------------- */
+
+.year-group {
+  margin-bottom: 2.5rem;
+}
+.year-group:last-child { margin-bottom: 0; }
+
+.notes-year {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0 0 0.75rem;
+}
+
+.notes-list {
+  display: flex;
+  flex-direction: column;
+}
+.notes-list a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--divider-soft);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.notes-list a:last-child { border-bottom: 0; }
+.notes-list a:hover { color: var(--gray-600); opacity: 1; }
+.notes-list .tag {
+  font-size: 0.6875rem;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+
+/* --- Individual note ------------------------------------------------------- */
+
+.note {
+  padding-top: 2.5rem;
+  padding-bottom: 1rem;
+}
+.note-head {
+  margin-bottom: 2.5rem;
+}
+.note-head h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+  text-wrap: balance;
+}
+@media (min-width: 640px) {
+  .note-head h1 { font-size: 1.875rem; }
+}
+.note-head .note-meta {
+  font-size: 0.8125rem;
+  color: var(--gray-500);
+  font-style: italic;
+  margin: 0;
+}
+.note-body {
+  max-width: 36rem;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--fg-75);
+}
+.note-body p {
+  margin: 0 0 1.25rem;
+}
+.note-body a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--fg) 38%, transparent);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: color 140ms ease, text-decoration-color 140ms ease;
+}
+.note-body a:hover {
+  color: var(--fg);
+  text-decoration-color: var(--fg);
+  opacity: 1;
+}
+
+/* --- Contact --------------------------------------------------------------- */
+
+.contact-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.contact-methods a {
+  font-size: 1.125rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  color: var(--fg);
+  width: fit-content;
+}
+.contact-methods a:hover { color: var(--gray-600); opacity: 1; }
+.contact-methods .label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+/* --- Footer ---------------------------------------------------------------- */
+
+.site-footer {
+  margin-top: 1.5rem;
+  padding-top: 1.75rem;
+  padding-bottom: 2.5rem;
+  border-top: 1px solid var(--divider);
+  color: var(--gray-500);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem 2rem;
+}
+.site-footer p { margin: 0; }
+.site-footer a { color: inherit; text-decoration: none; }
+.site-footer a:hover { color: var(--fg); opacity: 1; }
+.site-footer .footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+.site-footer .clock {
+  font-style: italic;
+  color: var(--gray-400);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+/* --- Print-only utility --------------------------------------------------- */
+/* Elements that should appear ONLY when printing (e.g. the resume-contact
+   line shown at the top of the PDF). */
+.print-only { display: none; }
+
+/* --- Print ---------------------------------------------------------------- */
+/* /resume/ is the primary print target. Hit Cmd+P (or click "pdf") to get a
+   clean one-to-two page professional resume. Every CSS value below is
+   intentionally in pt/inch so the PDF is paper-accurate regardless of the
+   screen it was generated from. */
+
+@media print {
+  /* Reset both themes to high-contrast monochrome for paper */
+  :root,
+  [data-theme="dark"] {
+    color-scheme: light;
+    --fg:        #000;
+    --bg:        #fff;
+    --gray-400:  #666;
+    --gray-500:  #444;
+    --gray-600:  #222;
+    --gray-700:  #000;
+    --divider:   #999;
+    --divider-soft: #ccc;
+    --fg-75:     #222;
+    --fg-60:     #444;
+    --fg-50:     #666;
+  }
+
+  @page {
+    size: letter;
+    margin: 0.55in 0.6in;
+  }
+
+  html { font-size: 10.5pt; }
+  body {
+    line-height: 1.42;
+    color: #000;
+    background: #fff;
+    min-height: 0;
+    display: block;
+  }
+
+  /* No transitions / animations on paper */
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* Let @page own the margins */
+  .wrap {
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* Reveal elements that are hidden on screen */
+  .print-only { display: block; }
+
+  /* --- Header ------------------------------------------------------------ */
+  .site-header {
+    padding: 0 0 0.2in;
+    margin: 0 0 0.28in;
+    border-bottom: 1px solid #999;
+    display: block;
+  }
+  .site-header .brand-group { display: block; }
+  .site-header .brand {
+    display: block;
+    text-decoration: none;
+    color: #000;
+  }
+  .site-header .brand .name {
+    font-size: 22pt;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: #000;
+    margin: 0 0 0.04in;
+    display: block;
+  }
+  .site-header .brand .sub {
+    font-size: 10.5pt;
+    color: #555;
+    font-style: normal;
+    margin: 0;
+    display: block;
+  }
+  .site-header nav,
+  .theme-toggle {
+    display: none;
+  }
+  .print-contact {
+    font-size: 10pt;
+    color: #444;
+    margin: 0.1in 0 0;
+    font-style: normal;
+    line-height: 1.4;
+  }
+  .print-contact a {
+    color: #000;
+    text-decoration: none;
+  }
+
+  /* --- Sections ---------------------------------------------------------- */
+  section.group {
+    padding: 0.22in 0 0;
+    margin: 0;
+    border-top: 0;
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+  section.group:first-of-type { padding-top: 0; }
+  section.group + section.group {
+    border-top: 0;
+    padding-top: 0.22in;
+    margin-top: 0.05in;
+  }
+  section.group h1,
+  section.group h2 {
+    font-size: 11pt;
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0 0 0.14in;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  section.group .kicker { display: none; }
+  section.group.no-kicker h1,
+  section.group.no-kicker h2 { margin-bottom: 0.14in; }
+
+  /* --- Entries ----------------------------------------------------------- */
+  .entries {
+    display: block;
+    gap: 0;
+  }
+  article.entry {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    padding: 0 0 0.14in;
+    margin: 0;
+    border-bottom: 0;
+  }
+  article.entry:last-child {
+    padding-bottom: 0;
+  }
+  article.entry .head {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75em;
+    margin: 0 0 0.03in;
+  }
+  article.entry h3 {
+    font-size: 10.5pt;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.25;
+    color: #000;
+  }
+  article.entry .dates {
+    font-size: 9.5pt;
+    color: #555;
+    flex-shrink: 0;
+    font-style: normal;
+  }
+  article.entry .role {
+    font-size: 9.5pt;
+    color: #555;
+    font-style: italic;
+    margin: 0 0 0.06in;
+    line-height: 1.3;
+  }
+  article.entry .desc {
+    font-size: 10pt;
+    color: #222;
+    line-height: 1.42;
+    margin: 0;
+    max-width: none;
+  }
+  article.entry .desc + .links { margin-top: 0.06in; }
+  article.entry .links {
+    display: block;
+    margin: 0;
+    gap: 0;
+  }
+  article.entry .links a {
+    font-size: 9pt;
+    color: #555;
+    text-transform: none;
+    letter-spacing: 0;
+    text-decoration: none;
+    font-style: italic;
+    margin-right: 0.15in;
+  }
+
+  section.group .other-line {
+    font-size: 10pt;
+    color: #222;
+    line-height: 1.45;
+  }
+
+  /* --- Hide everything else --------------------------------------------- */
+  .site-footer { display: none; }
+  .home-nav,
+  .home-socials,
+  .home-brand .theme-toggle { display: none; }
+  .home-bio { max-width: none; color: #000; }
+  .home-bio a { color: #000; }
+  .home-brand h1 { font-size: 22pt; font-weight: 500; }
+  .page-intro { padding: 0 0 0.2in; border-bottom: 1px solid #999; margin-bottom: 0.28in; }
+  .page-intro h1 { font-size: 16pt; }
+}
