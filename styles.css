@@ -354,7 +354,7 @@ button {
 .home-cover {
   overflow: clip;
   width: 100%;
-  max-width: 54rem;
+  max-width: 48rem; /* the one site-wide frame — aligns with the footer + every page */
   margin-inline: auto;
   padding: 48px clamp(24px, 4vw, 48px) 72px;
   display: flex;
