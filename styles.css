@@ -650,6 +650,13 @@ html[data-locked] .year-group { display: none; }
   letter-spacing: 0.02em;
   color: var(--faint);
 }
+.site-footer .copyright a {
+  display: inline-block;
+  padding: 12px 4px;
+  margin: -12px -4px;
+  transition: color 0.18s var(--ease);
+}
+.site-footer .copyright a:hover { color: var(--text); }
 .site-footer .clock {
   font-family: var(--font-d);
   font-style: italic;
