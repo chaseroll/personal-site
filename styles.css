@@ -251,7 +251,7 @@ button {
 
 /* --- Article band (page body) ------------------------------------------------- */
 
-.article-band { position: relative; }
+.article-band { position: relative; container-type: inline-size; }
 
 .band-inner {
   overflow: clip;
@@ -299,7 +299,7 @@ button {
 /* wide figures span the FRAME's content width (the same span as the hero
    text and the footer hairline), not just a bleed past the prose column */
 .essay-fig--wide, .prose .essay-fig--wide {
-  --frame-w: calc(min(100vw, 48rem) - 2 * clamp(24px, 4vw, 48px));
+  --frame-w: calc(min(100cqw, 48rem) - 2 * clamp(24px, 4vw, 48px)); /* cqw: real layout width, scrollbar excluded */
   width: var(--frame-w);
   margin: 52px calc((100% - var(--frame-w)) / 2);
 }
@@ -310,7 +310,6 @@ button {
 [data-theme="dark"] .essay-img { filter: brightness(0.85); }
 @media (max-width: 1000px) {
   .essay-fig--wide, .prose .essay-fig--wide { margin-block: 40px; }
-  .essay-fig--wide figcaption { padding-inline: 24px; }
 }
 @media (max-width: 600px) {
   /* portrait phones keep the full edge-to-edge bleed */
@@ -628,6 +627,8 @@ html[data-locked] .year-group { display: none; }
   color: var(--accent);
   margin: 14px 0 0;
 }
+/* dark accent misses AA at 14px; the italic voice alone carries the error */
+[data-theme="dark"] .gate-err { color: var(--text); }
 
 /* --- Footer ----------------------------------------------------------------------- */
 

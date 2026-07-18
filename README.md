@@ -13,7 +13,7 @@ carrying the editorial structure built during the redesign:
   section headings, list titles; its *italic* is the voice for folio subs,
   dates, roles, year labels, the clock, and home socials
 - **System serif** (New York / Charter / Georgia) — everything else: body
-  text and prose (16–16.5px), nav (15px lowercase), descriptions, tags,
+  text and prose (16–16.5px), nav (15px lowercase), descriptions,
   captions, footer. No other font ships.
 
 Colors flow through tokens at the top of `styles.css`: light `#fafafa` /
@@ -60,7 +60,7 @@ hover, links go accent, inline prose links carry an accent underline.
 ├── vercel.json              security + cache headers (Vercel)
 ├── robots.txt, sitemap.xml
 ├── resume/index.html        Projects / Experience / Education / Other
-├── notes/index.html         the notebook — numbered, year-grouped entries
+├── notes/index.html         the notebook — bare title rows, year-grouped (password-gated)
 │   ├── hello-world/         short note (essay template, minimal)
 │   └── by-invitation-only/  full-length essay (all template components;
 │                            currently noindex'd stand-in prose)
@@ -81,13 +81,29 @@ will break stylesheet and font loading.
 Stylesheet/JS links carry a cache-busting query (`styles.css?v=N`) — bump
 it on every styles.css or theme.js change.
 
+## Notes gate (private while practicing)
+
+`/notes/` is password-gated. A pre-paint inline script on
+`notes/index.html` sets `data-locked` on `<html>` unless
+`localStorage['chaseroll-notes']` holds the password's SHA-256 hex (the
+constant lives in that page's two inline scripts); CSS then swaps the
+list for the `.gate` form, which hashes input via `crypto.subtle`
+(needs https or localhost). Both note pages carry a bounce script to
+`/notes/` when locked. While the gate is up: all three notes pages are
+`noindex`, `robots.txt` disallows `/notes/`, and the notes URLs are out
+of `sitemap.xml`. Going public later = remove the gate form + scripts,
+the bounce scripts, the three `noindex` metas, the robots rule, and
+re-add the URLs to the sitemap.
+
 ## Deploy
 
-Push to GitHub and connect the repo to Cloudflare Pages or Netlify (the
-`_headers` file is their format — Vercel would need the same rules ported
-to `vercel.json`). No build command, no output directory, pure static
-files. `_headers` sets security headers and long-cache for `/fonts/*`,
-`styles.css`/`theme.js` (safe because of the `?v=` stamps), and the icons.
+The repo is connected to Vercel: push to `main` and it deploys. No build
+command, no output directory, pure static files. `vercel.json` is the
+single headers authority — security headers site-wide, a year of
+immutable cache for `/fonts/*` and `styles.css`/`theme.js` (safe because
+of the `?v=` stamps; bump the stamp on all seven pages whenever either
+file changes — versions 35–37 are burned, never reuse them), and a week
+for icons and images.
 
 ## What's in `theme.js`
 
@@ -128,21 +144,17 @@ Copy `notes/by-invitation-only/` (full template) or `notes/hello-world/`
   vocabulary — paragraphs, links, section heads, figures
 
 Then add a list item in `notes/index.html` (see below) — new entries go
-on top. Numbers are automatic (a CSS counter), so nothing to renumber.
+on top.
 
 ### Add an item to the notebook (`notes/index.html`)
 
-Inside the current year's `<div class="notes-list">`:
+Inside the current year's `<div class="notes-list">` — a row is just a
+titled link, nothing else:
 
 ```html
-<a href="https://…">
-  <span class="num" aria-hidden="true"></span>
-  <span class="title">Title of the thing</span>
-  <span class="tag">Link</span>
-</a>
+<a href="/notes/your-slug/">Title of the thing</a>
 ```
 
-Tags are auto-uppercased by CSS, so type `Note` / `Essay` / `Link` / `PDF`.
 For a new year, prepend a new `<div class="year-group">` with an
 `<h2 class="notes-year">2027</h2>`.
 

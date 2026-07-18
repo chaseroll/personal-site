@@ -2,8 +2,8 @@
    Loaded with `defer`; the tiny inline <script> in each page's <head> applies
    the initial theme before paint (no flash of wrong theme), and this file
    re-applies it to sync theme-color metas + toggle state. Concerns: theme
-   toggling, external-link decoration, the footer clock, the reading bar,
- */
+   toggling, external-link decoration, the footer clock, and the
+   reading bar. */
 
 (function () {
   /* --- Theme --------------------------------------------------------- */

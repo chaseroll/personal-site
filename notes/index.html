@@ -34,8 +34,8 @@
   <script>(function(){var t=null;try{t=localStorage.getItem('chaseroll-theme')}catch(e){}if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';if(t==='dark')document.documentElement.setAttribute('data-theme','dark');document.documentElement.style.colorScheme=t})();</script>
   <script>(function(){try{if(localStorage.getItem('chaseroll-notes')!=='61f5e53847298f22168f1966996cd0939683ce2bd69abda73c9e2f8d3e5895af')document.documentElement.setAttribute('data-locked','')}catch(e){document.documentElement.setAttribute('data-locked','')}})();</script>
   <style>html{background:#fafafa}html[data-theme="dark"]{background:#0a0a0a}</style>
-  <link rel="stylesheet" href="/styles.css?v=41" />
-  <script src="/theme.js?v=41" defer></script>
+  <link rel="stylesheet" href="/styles.css?v=42" />
+  <script src="/theme.js?v=42" defer></script>
   <script type="speculationrules">
   {
     "prefetch": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }]
@@ -68,10 +68,10 @@
 
       <form class="gate" autocomplete="off">
         <div class="gate-row">
-          <input class="gate-input" type="password" name="password" placeholder="Password" aria-label="Password" />
+          <input class="gate-input" type="password" name="password" placeholder="Password" aria-label="Password" aria-describedby="gate-err" />
           <button class="gate-go" type="submit" aria-label="Unlock">&rarr;</button>
         </div>
-        <p class="gate-err" hidden>That&rsquo;s not it.</p>
+        <p class="gate-err" id="gate-err" role="alert" hidden>That&rsquo;s not it.</p>
       </form>
 
         <div class="year-group">
@@ -111,6 +111,8 @@
         if (hex === '61f5e53847298f22168f1966996cd0939683ce2bd69abda73c9e2f8d3e5895af') {
           try { localStorage.setItem('chaseroll-notes', hex); } catch (err) {}
           document.documentElement.removeAttribute('data-locked');
+          var first = document.querySelector('.notes-list a');
+          if (first) first.focus(); /* land keyboard/SR focus on the revealed list */
         } else {
           form.querySelector('.gate-err').hidden = false;
           form.password.value = '';
