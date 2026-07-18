@@ -290,18 +290,25 @@ button {
 
 /* .prose-scoped so these win over the generic `.prose figure` margins */
 .essay-fig, .prose .essay-fig { margin: 44px 0; }
-.essay-fig--wide, .prose .essay-fig--wide { margin: 52px calc(-1 * clamp(24px, 4vw, 48px)); }
+/* wide figures span the FRAME's content width (the same span as the hero
+   text and the footer hairline), not just a bleed past the prose column */
+.essay-fig--wide, .prose .essay-fig--wide {
+  --frame-w: calc(min(100vw, 48rem) - 2 * clamp(24px, 4vw, 48px));
+  width: var(--frame-w);
+  margin: 52px calc((100% - var(--frame-w)) / 2);
+}
 .essay-img-wrap { width: 100%; overflow: hidden; }
 .essay-img {
   width: 100%; /* .prose img supplies height:auto/display:block; nothing else applies */
 }
 [data-theme="dark"] .essay-img { filter: brightness(0.85); }
 @media (max-width: 1000px) {
-  .essay-fig--wide, .prose .essay-fig--wide { margin: 40px calc(-1 * clamp(24px, 4vw, 48px)); }
+  .essay-fig--wide, .prose .essay-fig--wide { margin-block: 40px; }
   .essay-fig--wide figcaption { padding-inline: 24px; }
 }
 @media (max-width: 600px) {
-  .essay-fig--wide, .prose .essay-fig--wide { margin: 36px -24px; }
+  /* portrait phones keep the full edge-to-edge bleed */
+  .essay-fig--wide, .prose .essay-fig--wide { width: auto; margin: 36px -24px; }
   .essay-fig--wide figcaption { padding-inline: 20px; }
 }
 
@@ -324,18 +331,6 @@ button {
   .essay-section-head { margin: 52px 0 20px; padding-top: 52px; }
 }
 
-
-/* Scroll-reveal (essay pages; requires the `js` class theme.js stamps on <html>,
-   so content stays visible without JavaScript) */
-.js .reveal {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
-}
-.js .reveal.visible {
-  opacity: 1;
-  transform: none;
-}
 
 /* --- Essay footer --------------------------------------------------------------- */
 
@@ -714,12 +709,6 @@ html[data-locked] .year-group { display: none; }
     animation: none !important;
   }
 
-  /* scroll-reveal must never hide content on paper */
-  .reveal {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
   html, html[data-theme="dark"] { background: #fff; }
 
   /* the locked notes page prints its folio only — never the password form */
@@ -738,7 +727,7 @@ html[data-locked] .year-group { display: none; }
   [data-theme="dark"] .home-portrait { filter: none; }
 
   /* full-bleed figures don't bleed off a printed page */
-  .essay-fig--wide, .prose .essay-fig--wide { margin-left: 0; margin-right: 0; }
+  .essay-fig--wide, .prose .essay-fig--wide { width: auto; margin-left: 0; margin-right: 0; }
   .essay-fig--wide figcaption { padding-inline: 0; }
 
   /* entries marked as drafts stay off the professional PDF */

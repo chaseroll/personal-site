@@ -41,7 +41,7 @@ Everything on every page — header, title band, content, footer, and the
 home cover — shares ONE column: `max-width: 48rem`, padding
 `clamp(24px, 4vw, 48px)`. One left edge site-wide.
 
-Essay pages additionally get scroll-reveal animations and an
+Essay pages additionally get an
 `.essay-footer` (lowercase `← all notes`). Signature interactions: list rows nudge 5px right on
 hover, links go accent, inline prose links carry an accent underline.
 
@@ -52,7 +52,7 @@ hover, links go accent, inline prose links carry an accent underline.
 ├── index.html               home — the quiet splash (see above)
 ├── 404.html                 not-found page (folio grammar)
 ├── styles.css               shared stylesheet (screen + print)
-├── theme.js                 theme, links, clock, reading bar, scroll reveals
+├── theme.js                 theme, links, clock, reading bar
 ├── fonts/                   self-hosted variable woff2 (latin subsets)
 ├── favicon.svg              "C" mark, adapts to OS dark mode
 ├── og-image.png             1200×630 social card
@@ -91,7 +91,7 @@ files. `_headers` sets security headers and long-cache for `/fonts/*`,
 
 ## What's in `theme.js`
 
-One small IIFE handling five concerns:
+One small IIFE handling four concerns:
 
 1. **Theme** — reads `localStorage['chaseroll-theme']`, falls back to system
    preference, sets `data-theme="dark"` on `<html>`. Click the `◐` button to
@@ -105,9 +105,6 @@ One small IIFE handling five concerns:
    Central Time, updates every second.
 4. **Reading bar** — the 2px accent progress bar at the top of the two
    article pages (no-op on pages without the element).
-5. **Scroll reveals** — elements with `.reveal` fade/rise in when they
-   enter the viewport (gated on the `js` class so no-JS keeps content
-   visible).
 
 Each HTML page also has a tiny inline `<script>` in its `<head>` that applies
 the theme synchronously before first paint — prevents any flash of wrong
@@ -129,7 +126,6 @@ Copy `notes/by-invitation-only/` (full template) or `notes/hello-world/`
   `<picture>` with a WebP source + JPEG fallback, explicit
   `width`/`height`, `loading="lazy"`). That is the whole essay
   vocabulary — paragraphs, links, section heads, figures
-- keep `.reveal` classes on new blocks (hero blocks get `reveal visible`)
 
 Then add a list item in `notes/index.html` (see below) — new entries go
 on top. Numbers are automatic (a CSS counter), so nothing to renumber.

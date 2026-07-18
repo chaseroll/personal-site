@@ -3,7 +3,7 @@
    the initial theme before paint (no flash of wrong theme), and this file
    re-applies it to sync theme-color metas + toggle state. Concerns: theme
    toggling, external-link decoration, the footer clock, the reading bar,
-   and scroll reveals. */
+ */
 
 (function () {
   /* --- Theme --------------------------------------------------------- */
@@ -154,38 +154,6 @@
     }
   }
 
-  /* Signal that JS is live — gates the scroll-reveal styles so content
-     stays visible when scripts don't run. */
-  document.documentElement.classList.add('js');
-
-  /* --- Scroll reveal (essay pages) ------------------------------------ */
-
-  function startReveals() {
-    var els = document.querySelectorAll('.reveal:not(.visible)');
-    if (!els.length) return;
-    if (!('IntersectionObserver' in window)) {
-      for (var i = 0; i < els.length; i++) els[i].classList.add('visible');
-      return;
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) {
-          en.target.classList.add('visible');
-          io.unobserve(en.target);
-        }
-      });
-    }, { rootMargin: '0px 0px -8% 0px' });
-    for (var j = 0; j < els.length; j++) {
-      /* anything already in the first viewport shows instantly — no blink,
-         and nothing in the bottom rootMargin band is left hidden on load */
-      if (els[j].getBoundingClientRect().top < window.innerHeight) {
-        els[j].classList.add('visible');
-      } else {
-        io.observe(els[j]);
-      }
-    }
-  }
-
   /* --- Reading progress bar (article pages only; no-op when the div is absent) --- */
 
   function startReadingBar() {
@@ -212,6 +180,5 @@
     decorateLinks();
     startClock();
     startReadingBar();
-    startReveals();
   });
 })();
