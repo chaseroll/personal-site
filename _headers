@@ -18,3 +18,38 @@
 
 /og-image.png
   Cache-Control: public, max-age=604800, must-revalidate
+
+/portrait.jpg
+  Cache-Control: public, max-age=604800, must-revalidate
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Versioned assets (cache-busted via ?v=) — cache hard
+/styles.css
+  Cache-Control: public, max-age=31536000, immutable
+
+/theme.js
+  Cache-Control: public, max-age=31536000, immutable
+
+# Essay images (never glob /notes/* — that would cache the HTML pages)
+/notes/by-invitation-only/sf-marin-headlands.jpg
+  Cache-Control: public, max-age=604800, must-revalidate
+
+/notes/by-invitation-only/naval-ravikant.jpg
+  Cache-Control: public, max-age=604800, must-revalidate
+
+/notes/by-invitation-only/ben-horowitz.jpg
+  Cache-Control: public, max-age=604800, must-revalidate
+
+/notes/by-invitation-only/sf-marin-headlands.webp
+  Cache-Control: public, max-age=604800, must-revalidate
+
+/notes/by-invitation-only/sf-marin-headlands-800.webp
+  Cache-Control: public, max-age=604800, must-revalidate
+
+/notes/by-invitation-only/naval-ravikant.webp
+  Cache-Control: public, max-age=604800, must-revalidate
+
+/notes/by-invitation-only/ben-horowitz.webp
+  Cache-Control: public, max-age=604800, must-revalidate

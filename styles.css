@@ -1,50 +1,59 @@
 /* ==========================================================================
    chaseroll.com — shared stylesheet
-   One file, no framework. Typography modeled after aratame.me.
+   The original site's quiet neutral palette and single-serif voice, with the
+   editorial structure kept from the redesign (folio bands, essay template).
+
+   Type: Cormorant Garamond (titles + italic voice, self-hosted)
+         system serif (New York/Charter/Georgia) for everything else.
    ========================================================================== */
 
-/* --- Tokens ---------------------------------------------------------------- */
+/* --- Fonts ------------------------------------------------------------------ */
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("/fonts/cormorant.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("/fonts/cormorant-italic.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: italic;
+  font-display: swap;
+}
+/* --- Tokens (the original site's neutral palette, red accent) ----------------- */
 
 :root {
   color-scheme: light;
 
-  --fg:        #111111;
-  --bg:        #fafafa;
-  --gray-300:  #d1d5db;
-  --gray-400:  #9ca3af;
-  --gray-500:  #6b7280;
-  --gray-600:  #4b5563;
-  --gray-700:  #374151;
+  --bg:     #fafafa;
+  --text:   #111111;
+  --muted:  rgba(17, 17, 17, 0.62);
+  --faint:  rgba(17, 17, 17, 0.58); /* lightest ink that still clears AA at 13px */
+  --accent: #be0f28;
+  --line:   rgba(0, 0, 0, 0.09);
 
-  --fg-75:     rgba(17, 17, 17, 0.75);
-  --fg-60:     rgba(17, 17, 17, 0.60);
-  --fg-50:     rgba(17, 17, 17, 0.50);
+  --focus:    rgba(17, 17, 17, 0.5);
 
-  --divider:      rgba(0, 0, 0, 0.09);
-  --divider-soft: rgba(0, 0, 0, 0.05);
-  --focus:        rgba(17, 17, 17, 0.25);
-  --rule-strong:  rgba(0, 0, 0, 0.14);
+  --font-d: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --font-b: ui-serif, "New York", "Charter", "Tiempos Text", Georgia, Cambria, "Times New Roman", serif;
+
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --fg:        #e5e5e5;
-  --bg:        #0a0a0a;
-  --gray-300:  #4b5563;
-  --gray-400:  #9ca3af;
-  --gray-500:  #a3a3a3;
-  --gray-600:  #d1d5db;
-  --gray-700:  #e5e7eb;
+  --bg:     #0a0a0a;
+  --text:   #e5e5e5;
+  --muted:  rgba(229, 229, 229, 0.64);
+  --faint:  rgba(229, 229, 229, 0.52); /* lightest ink that still clears AA at 13px */
+  --accent: #d9112a;
+  --line:   rgba(255, 255, 255, 0.09);
 
-  --fg-75:     rgba(229, 229, 229, 0.75);
-  --fg-60:     rgba(229, 229, 229, 0.60);
-  --fg-50:     rgba(229, 229, 229, 0.50);
-
-  --divider:      rgba(255, 255, 255, 0.09);
-  --divider-soft: rgba(255, 255, 255, 0.05);
-  --focus:        rgba(229, 229, 229, 0.30);
-  --rule-strong:  rgba(255, 255, 255, 0.14);
+  --focus:    rgba(229, 229, 229, 0.5);
 }
 
 /* --- Reset / Base ---------------------------------------------------------- */
@@ -52,26 +61,32 @@
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 
-html {
-  font-family: ui-serif, "New York", "Charter", "Tiempos Text", Georgia, Cambria, "Times New Roman", Times, serif;
-  font-size: 18px;
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-b);
+  font-size: 16.5px;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-feature-settings: "kern", "liga", "calt";
   -webkit-tap-highlight-color: transparent;
-  scroll-behavior: smooth;
-}
-
-body {
-  color: var(--fg);
-  background: var(--bg);
-  line-height: 1.6;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
+
+/* Theme-toggle crossfade — armed by theme.js on the FIRST toggle click only,
+   so page loads never animate the background (that read as a flash). */
+html.theme-anim body {
+  transition: background 0.35s var(--ease), color 0.35s var(--ease);
+}
+
+main { flex: 1 1 auto; }
 
 :focus { outline: none; }
 :focus-visible {
@@ -88,495 +103,614 @@ body {
   }
 }
 
-::selection { background: var(--fg); color: var(--bg); }
+/* Translucent so WebKit's selection "gap" painting reads as a soft tint
+   instead of opaque full-bleed slabs; containers below clip the spill. */
+::selection { background: color-mix(in srgb, var(--accent) 32%, transparent); }
 
-/* --- Layout containers ----------------------------------------------------- */
-
-.wrap {
-  width: 100%;
-  max-width: 48rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-}
-@media (min-width: 640px) {
-  .wrap { padding-left: 2rem; padding-right: 2rem; }
-}
-
-main { flex: 1 1 auto; }
-
-/* --- Links (base) ---------------------------------------------------------- */
-
-a {
+a { color: inherit; text-decoration: none; }
+button {
+  font-family: var(--font-b);
   color: inherit;
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
-  transition: color 140ms ease, opacity 140ms ease;
-}
-a:hover { text-decoration: none; opacity: 0.7; }
-
-/* --- Theme toggle ---------------------------------------------------------- */
-
-.theme-toggle {
-  font: inherit;
-  font-size: 1.125rem;
-  color: var(--gray-400);
   background: transparent;
-  border: 0;
-  padding: 0;
-  margin: 0;
-  line-height: 1;
+  border: none;
   cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  transition: color 140ms ease, transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
-  position: relative;
-  top: -1px;
+  padding: 0;
 }
-.theme-toggle:hover { color: var(--fg); }
-.theme-toggle:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 4px;
-  border-radius: 50%;
+
+/* --- Reading progress (the two article pages only; theme.js no-ops elsewhere) --- */
+
+.reading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0;
+  will-change: transform;
+  z-index: 200;
 }
-[data-theme="dark"] .theme-toggle { transform: rotate(180deg); }
 
-/* --- Inner-page top header ------------------------------------------------- */
+/* --- Masthead (in-flow page header, inner pages) --------------------------------
+   Not a pinned bar — it scrolls with the page (the original site's behavior,
+   kept on the founder's call) and aligns to the folio's content gutters. */
 
-.site-header {
-  padding-top: 3rem;
-  padding-bottom: 1.5rem;
+.masthead-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 16px;
+  max-width: 48rem;
+  margin-inline: auto;
+  padding: 28px clamp(24px, 4vw, 48px) 0;
 }
-.site-header .brand-group {
+.brand {
+  font-family: var(--font-d);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text);
+  white-space: nowrap;
+  transition: color 0.18s var(--ease);
+}
+.brand:hover { color: var(--muted); }
+.masthead nav {
   display: flex;
   align-items: center;
-  gap: 0.875rem;
+  gap: 24px;
 }
-.site-header .brand {
-  display: inline-flex;
-  flex-direction: column;
-  text-decoration: none;
-  color: inherit;
-}
-/* Counter the global a:hover opacity fade — brand shouldn't dim on hover */
-.site-header .brand:hover { opacity: 1; }
-.site-header .brand .name {
-  font-size: 1.75rem;
-  font-weight: 300;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
-  margin: 0;
-}
-@media (min-width: 640px) {
-  .site-header .brand .name { font-size: 2.25rem; }
-}
-.site-header .brand .sub {
-  font-size: 0.8125rem;
-  color: var(--gray-500);
-  font-style: italic;
-  margin-top: 0.375rem;
-  letter-spacing: 0;
-}
-.site-header nav {
-  display: flex;
-  gap: 1.25rem;
-  align-items: baseline;
-}
-.site-header nav a,
-.site-header nav button {
+.masthead nav a,
+.masthead nav button.text {
   font: inherit;
-  font-size: 0.875rem;
-  color: var(--gray-500);
-  text-decoration: none;
-  background: transparent;
-  border: 0;
-  padding: 0;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--muted);
+  padding: 12px 4px;
+  margin: -12px -4px;
+  transition: color 0.18s var(--ease);
+}
+.masthead nav a:hover,
+.masthead nav button.text:hover { color: var(--text); }
+
+/* --- Theme toggle (one style site-wide: the bare glyph) ---------------------- */
+
+.theme-toggle {
+  font-size: 18px;
+  line-height: 1;
+  padding: 12px;
+  margin: -12px;
+  color: var(--faint);
+  user-select: none;
+  -webkit-user-select: none;
+  transition: color 0.18s var(--ease);
+}
+.theme-toggle:hover { color: var(--text); }
+
+/* --- Folio (page-title band) ---------------------------------------------------
+   Deliberately plain: the title, one quiet italic line, and on essays an
+   italic date. No kickers, labels, or byline apparatus.                      */
+
+.folio {
+  border-bottom: 1px solid var(--line);
+}
+.folio-inner {
+  overflow: clip;
+  max-width: 48rem;
+  margin-inline: auto;
+  padding: clamp(24px, 3vh, 40px) clamp(24px, 4vw, 48px) clamp(20px, 2.5vh, 32px);
+}
+
+/* page titles and the home name are the SAME role at the SAME scale —
+   one title tier across the whole site */
+.folio-title,
+.home-name {
+  font-family: var(--font-d);
+  font-size: clamp(34px, 4.6vw, 52px);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--text);
   margin: 0;
-  cursor: pointer;
-  line-height: inherit;
-  transition: color 140ms ease;
-}
-.site-header nav a:hover,
-.site-header nav button:hover { color: var(--fg); opacity: 1; }
-.site-header nav button:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 3px;
 }
 
-/* --- Home (splash) main ---------------------------------------------------- */
+/* one quiet italic line under the title — no labels, no apparatus */
+.folio-sub {
+  font-family: var(--font-d);
+  font-style: italic;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 34rem;
+  margin: 14px 0 0;
+}
+/* in-sentence underlined links (folio subs + the home bio) — one treatment */
+.folio-sub a,
+.home-bio a {
+  border-bottom: 1px solid color-mix(in srgb, currentColor 40%, transparent);
+  transition: color 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+.folio-sub a:hover,
+.home-bio a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 
-main.home {
+/* essays: an italic date line */
+.folio-date {
+  font-family: var(--font-d);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--faint);
+  margin: 14px 0 0;
+}
+
+
+/* --- Article band (page body) ------------------------------------------------- */
+
+.article-band { position: relative; }
+
+.band-inner {
+  overflow: clip;
+  max-width: 48rem;
+  margin-inline: auto;
+  padding: 64px clamp(24px, 4vw, 48px) 96px;
+}
+@media (max-width: 600px) {
+  .band-inner { padding: 48px 24px 72px; }
+}
+
+/* --- Essay prose (the reference's essay-body) ---------------------------------- */
+
+.prose { max-width: 34rem; }
+/* Essay pages center the BODY column only. The hero (title/sub/date) stays
+   flush-left with the masthead brand; the prose, narrower than the 48rem
+   frame, would otherwise sit visibly left of center with nothing beside it. */
+.essay .prose { margin-inline: auto; }
+.prose p {
+  color: var(--text);
+  line-height: 1.75;
+  margin: 0 0 24px;
+}
+.prose p:last-child { margin-bottom: 0; }
+.prose a {
+  color: var(--text);
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 1px;
+  transition: color 0.18s var(--ease);
+}
+.prose a:hover { color: var(--accent); }
+/* A quotation, not a pull quote: borrowed voices sit apart but quieter than
+   the prose voice (entry-h3 tier). The <cite> line is optional — without it
+   the same element serves as a rare pull quote of the essay's own line. */
+.prose blockquote {
+  font-family: var(--font-d);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(17px, 1.8vw, 20px);
+  line-height: 1.5;
+  color: var(--text);
+  border-left: 2px solid var(--accent);
+  margin: 48px -4px;
+  padding: 10px 0 10px 28px;
+}
+.prose blockquote cite {
+  display: block;
+  margin-top: 12px;
+  font-family: var(--font-d);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--faint);
+}
+.prose blockquote cite::before { content: "\2014\00a0"; }
+.prose figure { margin: 44px 0; }
+.prose img { max-width: 100%; height: auto; display: block; }
+.prose figcaption {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  color: var(--faint);
+  margin-top: 10px;
+}
+@media (max-width: 600px) {
+  .prose blockquote { margin: 36px 0; padding-left: 20px; }
+}
+
+/* --- Essay components (figures, sections) --------------------------------------- */
+
+/* .prose-scoped so these win over the generic `.prose figure` margins */
+.essay-fig, .prose .essay-fig { margin: 44px 0; }
+.essay-fig--wide, .prose .essay-fig--wide { margin: 52px calc(-1 * clamp(24px, 4vw, 48px)); }
+.essay-img-wrap { width: 100%; overflow: hidden; }
+.essay-img {
+  width: 100%; /* .prose img supplies height:auto/display:block; nothing else applies */
+}
+[data-theme="dark"] .essay-img { filter: brightness(0.85); }
+@media (max-width: 1000px) {
+  .essay-fig--wide, .prose .essay-fig--wide { margin: 40px calc(-1 * clamp(24px, 4vw, 48px)); }
+  .essay-fig--wide figcaption { padding-inline: 24px; }
+}
+@media (max-width: 600px) {
+  .essay-fig--wide, .prose .essay-fig--wide { margin: 36px -24px; }
+  .essay-fig--wide figcaption { padding-inline: 20px; }
+}
+
+.essay-section-head {
+  border-top: 1px solid var(--line);
+  margin: 64px 0 24px;
+  padding-top: 64px;
+  position: relative;
+}
+.essay-section-title {
+  font-family: var(--font-d);
+  color: var(--text);
+  font-size: clamp(22px, 2.8vw, 30px);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.3;
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .essay-section-head { margin: 52px 0 20px; padding-top: 52px; }
+}
+
+
+/* Scroll-reveal (essay pages; requires the `js` class theme.js stamps on <html>,
+   so content stays visible without JavaScript) */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+.js .reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Essay footer --------------------------------------------------------------- */
+
+.essay-footer {
+  border-top: 1px solid var(--line);
+  margin-top: 52px;
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.essay-footer-back {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--muted);
+  transition: color 0.18s var(--ease);
+}
+.essay-footer-back:hover { color: var(--text); }
+
+/* --- Home cover ----------------------------------------------------------------
+   The splash keeps the old site's quiet centered composition — name, flowing
+   bio, section links, socials — dressed in the new system. Plain paper, no
+   masthead; the theme toggle rides beside the name. */
+
+.home-main {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 4rem;
-  padding-bottom: 4rem;
 }
-.home-brand {
+.home-cover {
+  overflow: clip;
+  width: 100%;
+  max-width: 54rem;
+  margin-inline: auto;
+  padding: 48px clamp(24px, 4vw, 48px) 72px;
+  display: flex;
+  flex-direction: row-reverse; /* img is first in DOM (reads first, stacks first on mobile) but sits right */
+  align-items: center;
+  gap: clamp(40px, 6vw, 64px);
+}
+.home-cover-text { flex: 1 1 auto; min-width: 0; }
+/* the portrait: full frame, in color, still — a print resting on the page.
+   (A slow drift was tried and cut: paper doesn't move.) */
+.home-portrait {
+  flex: none;
+  width: clamp(150px, 24vw, 225px);
+  height: auto;
+  display: block;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.14);
+  transform: rotate(2deg);
+}
+[data-theme="dark"] .home-portrait {
+  filter: brightness(0.9);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+}
+@media (max-width: 600px) {
+  .home-cover { display: block; }
+  .home-portrait { width: 150px; margin-bottom: 32px; }
+}
+
+.home-name-row {
   display: flex;
   align-items: center;
-  gap: 0.875rem;
-  margin-bottom: 1.75rem;
+  gap: 16px;
+  margin: 0 0 26px;
 }
-.home-brand h1 {
-  font-size: 2rem;
-  font-weight: 300;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
-  margin: 0;
-}
-@media (min-width: 640px) {
-  .home-brand h1 { font-size: 2.5rem; }
-}
+/* (.home-name shares the .folio-title rule — one title tier site-wide) */
 .home-bio {
-  font-size: 1.125rem;
-  color: var(--fg-75);
+  font-size: 17px;
+  font-weight: 400;
   line-height: 1.7;
+  color: color-mix(in srgb, var(--text) 80%, var(--bg));
   max-width: 34rem;
-  margin: 0 0 2.5rem;
+  margin: 0 0 36px;
   text-wrap: pretty;
-}
-.home-bio a {
-  color: var(--fg);
-  text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--fg) 38%, transparent);
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
-  transition: color 140ms ease, text-decoration-color 140ms ease;
-}
-.home-bio a:hover {
-  color: var(--fg);
-  text-decoration-color: var(--fg);
-  opacity: 1;
 }
 
 .home-nav {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem 1.5rem;
-  margin: 0 0 1.75rem;
+  gap: 8px 24px;
+  margin-bottom: 16px;
 }
+/* -8px (not the masthead's -12px): these are flex-wrap rows with an 8px row
+   gap, so full compensation would collapse wrapped lines onto each other */
 .home-nav a {
-  font-size: 1rem;
-  color: var(--fg-60);
-  text-decoration: none;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--muted);
+  padding: 12px 4px;
+  margin: -8px -4px;
+  display: inline-block;
+  transition: color 0.18s var(--ease);
 }
-.home-nav a:hover { color: var(--fg); opacity: 1; }
+.home-nav a:hover { color: var(--text); }
 
 .home-socials {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 0.25rem 1.25rem;
+  gap: 8px 20px;
 }
 .home-socials a {
-  font-size: 0.875rem;
-  color: var(--fg-50);
+  font-family: var(--font-d);
   font-style: italic;
-  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+  padding: 12px 4px;
+  margin: -8px -4px;
+  display: inline-block;
+  transition: color 0.18s var(--ease);
 }
-.home-socials a:hover { color: var(--fg); opacity: 1; }
+.home-socials a:hover { color: var(--text); }
 
-/* --- Inner-page title block ------------------------------------------------ */
+/* --- Notes index (essay-row + badge) --------------------------------------------- */
 
-.page-intro {
-  padding: 2.5rem 0 3rem;
-}
-.page-intro h1 {
-  font-size: 1.5rem;
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
-  margin: 0 0 0.5rem;
-}
-@media (min-width: 640px) {
-  .page-intro h1 { font-size: 1.875rem; }
-}
-.page-intro .kicker {
-  font-size: 0.875rem;
-  color: var(--gray-500);
-  margin: 0;
+.year-group { margin-bottom: 40px; }
+.year-group:last-child { margin-bottom: 0; }
+.notes-year {
+  font-family: var(--font-d);
   font-style: italic;
-  max-width: 36rem;
-  line-height: 1.6;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--faint);
+  margin: 0 0 4px;
+}
+.notes-list { display: flex; flex-direction: column; }
+/* a row is just the title — the year eyebrow carries time, nothing else to say */
+.notes-list a {
+  display: block;
+  font-family: var(--font-d);
+  font-size: clamp(15px, 1.5vw, 19px);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--text);
+  padding: 13px 0;
+  border-top: 1px solid var(--line);
+  transition: color 0.18s var(--ease), padding-left 0.18s var(--ease);
+}
+.notes-list a:last-child { border-bottom: 1px solid var(--line); }
+.notes-list a:hover { color: var(--accent); padding-left: 5px; }
+
+/* --- Resume (the reference's research-paper grammar) ------------------------------ */
+
+section.group { padding: 0 0 52px; }
+section.group + section.group {
+  border-top: 1px solid var(--line);
+  padding-top: 52px;
+}
+section.group > h2 {
+  font-family: var(--font-d);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text);
+  margin: 0 0 24px;
 }
 
-/* --- Resume sections ------------------------------------------------------- */
-
-section.group {
-  padding: 3.5rem 0 4rem;
-}
-section.group + section.group { border-top: 1px solid var(--divider); }
-section.group h1,
-section.group h2 {
-  font-size: 1.5rem;
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
-  margin: 0 0 0.5rem;
-  text-wrap: balance;
-}
-@media (min-width: 640px) {
-  section.group h1,
-  section.group h2 { font-size: 1.875rem; }
-}
-section.group .kicker {
-  font-size: 0.875rem;
-  color: var(--gray-500);
-  margin: 0 0 4rem;
-  font-style: italic;
-}
-section.group.no-kicker h1,
-section.group.no-kicker h2 { margin-bottom: 2.5rem; }
-
-/* --- Resume entries -------------------------------------------------------- */
-
-.entries {
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
-}
-article.entry {
-  border-bottom: 1px solid var(--divider);
-  padding-bottom: 2.5rem;
-}
-article.entry:last-child {
-  border-bottom: 0;
-  padding-bottom: 0;
-}
+.entries { display: flex; flex-direction: column; gap: 36px; }
 article.entry .head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0.25rem 1rem;
-  margin-bottom: 0.375rem;
+  gap: 4px 16px;
+  margin-bottom: 2px;
 }
 article.entry h3 {
-  font-size: 1.125rem;
-  font-weight: 500;
+  font-family: var(--font-d);
+  font-size: clamp(17px, 1.8vw, 20px);
+  font-weight: 400;
+  line-height: 1.3;
   margin: 0;
-  line-height: 1.35;
 }
+article.entry h3 a { transition: color 0.18s var(--ease); }
+article.entry h3 a:hover { color: var(--accent); }
+article.entry h3 .ext {
+  font-size: 0.62em;
+  color: var(--faint);
+  margin-left: 2px;
+  transition: color 0.18s var(--ease);
+}
+article.entry h3 a:hover .ext { color: var(--accent); }
 article.entry .dates {
-  font-size: 0.75rem;
-  color: var(--gray-400);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--faint);
   flex-shrink: 0;
   font-variant-numeric: tabular-nums;
-  line-height: 1.6;
 }
 article.entry .role {
-  font-size: 0.75rem;
-  color: var(--gray-400);
-  margin: 0 0 0.875rem;
+  font-family: var(--font-d);
+  font-style: italic;
+  font-size: 15px;
+  font-weight: 400;
   line-height: 1.5;
+  color: var(--muted);
+  margin: 0 0 10px;
 }
 article.entry .desc {
-  font-size: 0.9375rem;
-  color: var(--gray-500);
-  line-height: 1.65;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--muted);
   margin: 0;
-  max-width: 38rem;
+  max-width: 580px;
   text-wrap: pretty;
 }
-article.entry .desc + .links { margin-top: 1.125rem; }
-article.entry .links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem 1.5rem;
-}
-article.entry .links a {
-  font-size: 0.8125rem;
-  color: var(--gray-600);
-  text-decoration: none;
-}
-article.entry .links a:hover { color: var(--fg); opacity: 1; }
-
 section.group .other-line {
-  font-size: 0.9375rem;
-  color: var(--gray-500);
+  font-size: 15px;
+  color: var(--muted);
   margin: 0;
-  line-height: 1.8;
+  line-height: 1.7;
 }
 
-/* --- Notes (clipboard: year groups + tagged items) ------------------------- */
+/* --- Contact (the reference's contact-link rows) ----------------------------------- */
 
-.year-group {
-  margin-bottom: 2.5rem;
-}
-.year-group:last-child { margin-bottom: 0; }
-
-.notes-year {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--gray-400);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  margin: 0 0 0.75rem;
-}
-
-.notes-list {
-  display: flex;
-  flex-direction: column;
-}
-.notes-list a {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.875rem 0;
-  border-bottom: 1px solid var(--divider-soft);
-  text-decoration: none;
-  font-size: 0.9375rem;
-  line-height: 1.5;
-}
-.notes-list a:last-child { border-bottom: 0; }
-.notes-list a:hover { color: var(--gray-600); opacity: 1; }
-.notes-list .tag {
-  font-size: 0.6875rem;
-  color: var(--gray-400);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  flex-shrink: 0;
-}
-
-/* --- Individual note ------------------------------------------------------- */
-
-.note {
-  padding-top: 2.5rem;
-  padding-bottom: 1rem;
-}
-.note-head {
-  margin-bottom: 2.5rem;
-}
-.note-head h1 {
-  font-size: 1.5rem;
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
-  margin: 0 0 0.5rem;
-  text-wrap: balance;
-}
-@media (min-width: 640px) {
-  .note-head h1 { font-size: 1.875rem; }
-}
-.note-head .note-meta {
-  font-size: 0.8125rem;
-  color: var(--gray-500);
-  font-style: italic;
-  margin: 0;
-}
-.note-body {
-  max-width: 36rem;
-  font-size: 1rem;
-  line-height: 1.75;
-  color: var(--fg-75);
-}
-.note-body p {
-  margin: 0 0 1.25rem;
-}
-.note-body a {
-  color: var(--fg);
-  text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--fg) 38%, transparent);
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
-  transition: color 140ms ease, text-decoration-color 140ms ease;
-}
-.note-body a:hover {
-  color: var(--fg);
-  text-decoration-color: var(--fg);
-  opacity: 1;
-}
-
-/* --- Contact --------------------------------------------------------------- */
-
+/* rows span the frame like the resume's — apparatus holds the frame */
 .contact-methods {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 }
-.contact-methods a {
-  font-size: 1.125rem;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
-  color: var(--fg);
-  width: fit-content;
+.contact-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+  transition: padding-left 0.18s var(--ease);
 }
-.contact-methods a:hover { color: var(--gray-600); opacity: 1; }
-.contact-methods .label {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--gray-500);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  margin-bottom: 0.25rem;
-  display: block;
+.contact-link:last-child { border-bottom: 1px solid var(--line); }
+.contact-link:hover { padding-left: 5px; }
+.contact-link .value {
+  color: var(--text);
+  transition: color 0.18s var(--ease);
+}
+.contact-link:hover .value { color: var(--accent); }
+.contact-link .arrow {
+  font-size: 14px;
+  color: var(--faint);
+  transition: color 0.18s var(--ease);
+}
+.contact-link:hover .arrow { color: var(--accent); }
+
+/* --- Notes gate (private while practicing) ------------------------------------------
+   The head script on notes pages sets html[data-locked] before paint; the index
+   swaps its list for this form, note pages bounce to /notes/. Row grammar. */
+
+.gate { display: none; }
+html[data-locked] .gate { display: block; }
+html[data-locked] .year-group { display: none; }
+.gate-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 18px 0;
+}
+.gate-input {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-b);
+  font-size: 16.5px;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+.gate-input::placeholder { color: var(--faint); }
+.gate-input:focus { outline: none; }
+.gate-row:focus-within { border-bottom-color: var(--focus); }
+.gate-go {
+  font-size: 14px;
+  color: var(--faint);
+  padding: 18px 12px; /* house tap-target: pad + compensate, visual unchanged */
+  margin: -18px -12px;
+  transition: color 0.18s var(--ease);
+}
+.gate-go:hover { color: var(--accent); }
+.gate-err {
+  font-family: var(--font-d);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--accent);
+  margin: 14px 0 0;
 }
 
-/* --- Footer ---------------------------------------------------------------- */
+/* --- Footer ----------------------------------------------------------------------- */
 
 .site-footer {
-  margin-top: 1.5rem;
-  padding-top: 1.75rem;
-  padding-bottom: 2.5rem;
-  border-top: 1px solid var(--divider);
-  color: var(--gray-500);
-  font-size: 0.8125rem;
-  line-height: 1.6;
+  border-top: 1px solid var(--line);
+}
+.site-footer-inner {
+  overflow: clip;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem 2rem;
+  align-items: baseline;
+  gap: 8px 32px;
+  padding: 28px clamp(24px, 4vw, 48px) 32px;
+  max-width: 48rem;
+  margin-inline: auto;
 }
 .site-footer p { margin: 0; }
-.site-footer a { color: inherit; text-decoration: none; }
-.site-footer a:hover { color: var(--fg); opacity: 1; }
-.site-footer .footer-left {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
+.site-footer .copyright {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--faint);
 }
 .site-footer .clock {
+  font-family: var(--font-d);
   font-style: italic;
-  color: var(--gray-400);
+  font-size: 13px;
+  color: var(--faint);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.01em;
+  margin-top: 2px;
 }
+.site-footer .reach {
+  font-size: 14px;
+  color: var(--muted);
+}
+.site-footer .reach a { transition: color 0.18s var(--ease); }
+.site-footer .reach a:hover { color: var(--accent); }
+.site-footer .footer-left { display: flex; flex-direction: column; }
 
-/* --- Print-only utility --------------------------------------------------- */
-/* Elements that should appear ONLY when printing (e.g. the resume-contact
-   line shown at the top of the PDF). */
+/* --- Print-only utility ------------------------------------------------------------ */
+
 .print-only { display: none; }
 
-/* --- Print ---------------------------------------------------------------- */
-/* /resume/ is the primary print target. Hit Cmd+P (or click "pdf") to get a
-   clean one-to-two page professional resume. Every CSS value below is
-   intentionally in pt/inch so the PDF is paper-accurate regardless of the
-   screen it was generated from. */
+/* --- Print --------------------------------------------------------------------------
+   /resume/ is the primary print target. Cmd+P (or the "pdf" button) produces a
+   clean professional resume. Other pages print their folio as the title block.  */
 
 @media print {
-  /* Reset both themes to high-contrast monochrome for paper */
   :root,
   [data-theme="dark"] {
     color-scheme: light;
-    --fg:        #000;
-    --bg:        #fff;
-    --gray-400:  #666;
-    --gray-500:  #444;
-    --gray-600:  #222;
-    --gray-700:  #000;
-    --divider:   #999;
-    --divider-soft: #ccc;
-    --fg-75:     #222;
-    --fg-60:     #444;
-    --fg-50:     #666;
+    --bg:     #fff;
+    --text:   #000;
+    --muted:  #333;
+    --faint:  #555;
+    --accent: #000;
+    --line:   #ccc;
   }
 
   @page {
@@ -586,75 +720,124 @@ section.group .other-line {
 
   html { font-size: 10.5pt; }
   body {
+    font-size: 10.5pt;
     line-height: 1.42;
     color: #000;
     background: #fff;
     min-height: 0;
     display: block;
+    overflow-x: visible;
   }
 
-  /* No transitions / animations on paper */
   *, *::before, *::after {
     transition: none !important;
     animation: none !important;
   }
 
-  /* Let @page own the margins */
-  .wrap {
-    max-width: none;
-    padding-left: 0;
-    padding-right: 0;
+  /* scroll-reveal must never hide content on paper */
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
   }
 
-  /* Reveal elements that are hidden on screen */
+  html, html[data-theme="dark"] { background: #fff; }
+
+  /* the locked notes page prints its folio only — never the password form */
+  html[data-locked] .gate { display: none; }
+
+  /* a section's hairline + title travel with the prose that follows */
+  .essay-section-head {
+    break-after: avoid;
+    page-break-after: avoid;
+    break-inside: avoid;
+  }
+  /* dark-mode image dimming must not alter printed output (selector must
+     match the [data-theme] screen rules' specificity to win) */
+  .essay-img, .home-portrait,
+  [data-theme="dark"] .essay-img,
+  [data-theme="dark"] .home-portrait { filter: none; }
+
+  /* full-bleed figures don't bleed off a printed page */
+  .essay-fig--wide, .prose .essay-fig--wide { margin-left: 0; margin-right: 0; }
+  .essay-fig--wide figcaption { padding-inline: 0; }
+
+  /* entries marked as drafts stay off the professional PDF */
+  .entry-draft { display: none; }
+
   .print-only { display: block; }
 
-  /* --- Header ------------------------------------------------------------ */
-  .site-header {
+  /* Hide screen chrome. The folio (title band) still prints — except on the
+     resume, where the .print-only .print-head replaces it. */
+  .masthead,
+  .site-footer,
+  .reading-bar,
+  .theme-toggle { display: none; }
+  body.resume .folio { display: none; }
+
+  .folio {
+    padding-top: 0;
+    border-bottom: 1px solid #999;
+    margin-bottom: 0.3in;
+  }
+  .folio-inner { max-width: none; padding: 0 0 0.22in; }
+  .folio-title {
+    font-size: 26pt;
+    line-height: 1.05;
+    color: #000;
+  }
+  .folio-sub { font-size: 11pt; color: #333; max-width: none; }
+  .folio-date { font-size: 10pt; color: #444; }
+
+  .band-inner { max-width: none; padding: 0; }
+  .prose p { font-size: 11pt; line-height: 1.55; color: #222; }
+  .essay-footer { display: none; }
+
+  /* Expose link destinations on paper */
+  .prose a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 85%;
+    color: #555;
+    font-style: normal;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  article.entry h3 a[href^="http"]::after {
+    content: "  " attr(href);
+    font-family: var(--font-b);
+    font-size: 8.5pt;
+    font-weight: 400;
+    color: #555;
+  }
+  article.entry h3 .ext { display: none; }
+  .prose a { border-bottom-color: #999; }
+
+  /* Print-only resume header */
+  .print-head {
     padding: 0 0 0.2in;
     margin: 0 0 0.28in;
     border-bottom: 1px solid #999;
-    display: block;
   }
-  .site-header .brand-group { display: block; }
-  .site-header .brand {
-    display: block;
-    text-decoration: none;
-    color: #000;
-  }
-  .site-header .brand .name {
+  .print-head .print-name {
+    font-family: var(--font-d);
     font-size: 22pt;
     font-weight: 500;
     line-height: 1.1;
     letter-spacing: -0.015em;
     color: #000;
-    margin: 0 0 0.04in;
-    display: block;
+    margin: 0 0 0.06in;
   }
-  .site-header .brand .sub {
-    font-size: 10.5pt;
-    color: #555;
-    font-style: normal;
-    margin: 0;
-    display: block;
-  }
-  .site-header nav,
-  .theme-toggle {
-    display: none;
-  }
-  .print-contact {
+  .print-head .print-contact {
     font-size: 10pt;
     color: #444;
-    margin: 0.1in 0 0;
-    font-style: normal;
+    margin: 0;
     line-height: 1.4;
   }
-  .print-contact a {
+  .print-head .print-contact a {
     color: #000;
     text-decoration: none;
   }
 
-  /* --- Sections ---------------------------------------------------------- */
+  /* Sections */
   section.group {
     padding: 0.22in 0 0;
     margin: 0;
@@ -668,37 +851,29 @@ section.group .other-line {
     padding-top: 0.22in;
     margin-top: 0.05in;
   }
-  section.group h1,
-  section.group h2 {
+  section.group > h2 {
+    font-family: var(--font-b);
     font-size: 11pt;
     font-weight: 600;
     line-height: 1.2;
     margin: 0 0 0.14in;
     color: #000;
+    opacity: 1;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     break-after: avoid;
     page-break-after: avoid;
   }
-  section.group .kicker { display: none; }
-  section.group.no-kicker h1,
-  section.group.no-kicker h2 { margin-bottom: 0.14in; }
 
-  /* --- Entries ----------------------------------------------------------- */
-  .entries {
-    display: block;
-    gap: 0;
-  }
+  /* Entries */
+  .entries { display: block; gap: 0; }
   article.entry {
     break-inside: avoid;
     page-break-inside: avoid;
     padding: 0 0 0.14in;
     margin: 0;
-    border-bottom: 0;
   }
-  article.entry:last-child {
-    padding-bottom: 0;
-  }
+  article.entry:last-child { padding-bottom: 0; }
   article.entry .head {
     display: flex;
     flex-wrap: nowrap;
@@ -708,6 +883,7 @@ section.group .other-line {
     margin: 0 0 0.03in;
   }
   article.entry h3 {
+    font-family: var(--font-b);
     font-size: 10.5pt;
     font-weight: 600;
     margin: 0;
@@ -718,9 +894,10 @@ section.group .other-line {
     font-size: 9.5pt;
     color: #555;
     flex-shrink: 0;
-    font-style: normal;
+    letter-spacing: 0;
   }
   article.entry .role {
+    font-family: var(--font-b);
     font-size: 9.5pt;
     color: #555;
     font-style: italic;
@@ -734,36 +911,9 @@ section.group .other-line {
     margin: 0;
     max-width: none;
   }
-  article.entry .desc + .links { margin-top: 0.06in; }
-  article.entry .links {
-    display: block;
-    margin: 0;
-    gap: 0;
-  }
-  article.entry .links a {
-    font-size: 9pt;
-    color: #555;
-    text-transform: none;
-    letter-spacing: 0;
-    text-decoration: none;
-    font-style: italic;
-    margin-right: 0.15in;
-  }
-
   section.group .other-line {
     font-size: 10pt;
     color: #222;
     line-height: 1.45;
   }
-
-  /* --- Hide everything else --------------------------------------------- */
-  .site-footer { display: none; }
-  .home-nav,
-  .home-socials,
-  .home-brand .theme-toggle { display: none; }
-  .home-bio { max-width: none; color: #000; }
-  .home-bio a { color: #000; }
-  .home-brand h1 { font-size: 22pt; font-weight: 500; }
-  .page-intro { padding: 0 0 0.2in; border-bottom: 1px solid #999; margin-bottom: 0.28in; }
-  .page-intro h1 { font-size: 16pt; }
 }

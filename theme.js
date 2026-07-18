@@ -1,6 +1,9 @@
 /* chaseroll.com — tiny enhancements
-   Loaded synchronously in <head> so the initial theme applies before paint
-   (no flash of light content on dark mode / vice versa). */
+   Loaded with `defer`; the tiny inline <script> in each page's <head> applies
+   the initial theme before paint (no flash of wrong theme), and this file
+   re-applies it to sync theme-color metas + toggle state. Concerns: theme
+   toggling, external-link decoration, the footer clock, the reading bar,
+   and scroll reveals. */
 
 (function () {
   /* --- Theme --------------------------------------------------------- */
@@ -11,13 +14,6 @@
     try {
       var v = localStorage.getItem(KEY);
       if (v === 'dark' || v === 'light') return v;
-      /* Migrate older un-namespaced key if present */
-      var old = localStorage.getItem('theme');
-      if (old === 'dark' || old === 'light') {
-        localStorage.setItem(KEY, old);
-        localStorage.removeItem('theme');
-        return old;
-      }
     } catch (e) {}
     return null;
   }
@@ -29,11 +25,33 @@
 
   function sysDark() { return mql ? mql.matches : false; }
 
+  var THEME_COLORS = { light: '#fafafa', dark: '#0a0a0a' };
+
   function apply(t) {
     if (t === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
     } else {
       document.documentElement.removeAttribute('data-theme');
+    }
+    /* Keep the UA in agreement with the applied theme: form controls /
+       scrollbars (color-scheme), mobile browser chrome (theme-color),
+       and the toggle's accessible state. */
+    document.documentElement.style.colorScheme = t;
+    var metas = document.querySelectorAll('meta[name="theme-color"]');
+    for (var i = 0; i < metas.length; i++) {
+      metas[i].setAttribute('content', THEME_COLORS[t]);
+    }
+    syncToggles(t);
+  }
+
+  function syncToggles(t) {
+    var btns = document.getElementsByClassName('theme-toggle');
+    /* action label only — pairing aria-pressed with a state-flipping label
+       reads as a contradiction in screen readers */
+    var label = 'Switch to ' + (t === 'dark' ? 'light' : 'dark') + ' theme';
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].setAttribute('aria-label', label);
+      btns[i].setAttribute('title', label);
     }
   }
 
@@ -41,7 +59,7 @@
     return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
   }
 
-  /* Apply initial theme synchronously — before first paint */
+  /* Re-apply the seed's theme — syncs theme-color metas, color-scheme, toggle state */
   apply(getStored() || (sysDark() ? 'dark' : 'light'));
 
   /* Click the toggle anywhere on the page */
@@ -49,6 +67,8 @@
     var t = e.target;
     var btn = t && t.closest ? t.closest('.theme-toggle') : null;
     if (!btn) return;
+    /* arm the background crossfade only for real toggles, never page loads */
+    document.documentElement.classList.add('theme-anim');
     var next = current() === 'dark' ? 'light' : 'dark';
     apply(next);
     saveStored(next);
@@ -113,8 +133,17 @@
       }
     }
 
-    render();
-    setInterval(render, 1000);
+    /* tick on the second boundary; pause while the tab is hidden */
+    var timer;
+    function tick() {
+      render();
+      timer = setTimeout(tick, 1000 - (Date.now() % 1000));
+    }
+    document.addEventListener('visibilitychange', function () {
+      clearTimeout(timer); /* idempotent restart — never stack a second chain */
+      if (!document.hidden) tick();
+    });
+    if (!document.hidden) tick();
   }
 
   function onReady(fn) {
@@ -125,8 +154,64 @@
     }
   }
 
+  /* Signal that JS is live — gates the scroll-reveal styles so content
+     stays visible when scripts don't run. */
+  document.documentElement.classList.add('js');
+
+  /* --- Scroll reveal (essay pages) ------------------------------------ */
+
+  function startReveals() {
+    var els = document.querySelectorAll('.reveal:not(.visible)');
+    if (!els.length) return;
+    if (!('IntersectionObserver' in window)) {
+      for (var i = 0; i < els.length; i++) els[i].classList.add('visible');
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add('visible');
+          io.unobserve(en.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    for (var j = 0; j < els.length; j++) {
+      /* anything already in the first viewport shows instantly — no blink,
+         and nothing in the bottom rootMargin band is left hidden on load */
+      if (els[j].getBoundingClientRect().top < window.innerHeight) {
+        els[j].classList.add('visible');
+      } else {
+        io.observe(els[j]);
+      }
+    }
+  }
+
+  /* --- Reading progress bar (article pages only; no-op when the div is absent) --- */
+
+  function startReadingBar() {
+    var bar = document.querySelector('.reading-bar');
+    if (!bar) return;
+
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var doc = document.documentElement;
+      var max = doc.scrollHeight - window.innerHeight;
+      var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      bar.style.transform = 'scaleX(' + p + ')';
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  }
+
   onReady(function () {
+    syncToggles(current());
     decorateLinks();
     startClock();
+    startReadingBar();
+    startReveals();
   });
 })();

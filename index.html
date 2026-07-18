@@ -4,22 +4,22 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Chase Roll</title>
-  <meta name="description" content="Chase Roll — 19, student at the University of Austin. Learning as much as I can and building along the way." />
+  <meta name="description" content="Chase Roll — 20, student at the University of Austin. Learning as much as I can and building along the way." />
   <meta name="author" content="Chase Roll" />
-  <meta name="color-scheme" content="light" />
+  <meta name="color-scheme" content="light dark" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://chaseroll.com" />
+  <meta property="og:url" content="https://chaseroll.com/" />
   <meta property="og:title" content="Chase Roll" />
-  <meta property="og:description" content="19, student at the University of Austin. Learning as much as I can and building along the way." />
+  <meta property="og:description" content="20, student at the University of Austin. Learning as much as I can and building along the way." />
   <meta property="og:image" content="https://chaseroll.com/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Chase Roll — 19, student at the University of Austin" />
+  <meta property="og:image:alt" content="Chase Roll — 20, student at the University of Austin" />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Chase Roll" />
-  <meta name="twitter:description" content="19, student at the University of Austin. Learning as much as I can and building along the way." />
+  <meta name="twitter:description" content="20, student at the University of Austin. Learning as much as I can and building along the way." />
   <meta name="twitter:image" content="https://chaseroll.com/og-image.png" />
 
   <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
@@ -27,17 +27,20 @@
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <link rel="canonical" href="https://chaseroll.com" />
-  <script>(function(){try{var t=localStorage.getItem('chaseroll-theme');if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';if(t==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}})();</script>
-  <link rel="stylesheet" href="/styles.css" />
-  <script src="/theme.js"></script>
+  <link rel="canonical" href="https://chaseroll.com/" />
+  <link rel="preload" href="/fonts/cormorant.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/cormorant-italic.woff2" as="font" type="font/woff2" crossorigin />
+  <script>(function(){var t=null;try{t=localStorage.getItem('chaseroll-theme')}catch(e){}if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';if(t==='dark')document.documentElement.setAttribute('data-theme','dark');document.documentElement.style.colorScheme=t})();</script>
+  <style>html{background:#fafafa}html[data-theme="dark"]{background:#0a0a0a}</style>
+  <link rel="stylesheet" href="/styles.css?v=34" />
+  <script src="/theme.js?v=34" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Chase Roll",
-    "url": "https://chaseroll.com",
-    "image": "https://chaseroll.com/og-image.png",
+    "url": "https://chaseroll.com/",
+    "image": "https://chaseroll.com/portrait.jpg",
     "jobTitle": "Founder",
     "address": {
       "@type": "PostalAddress",
@@ -45,7 +48,7 @@
       "addressRegion": "TX",
       "addressCountry": "US"
     },
-    "alumniOf": {
+    "affiliation": {
       "@type": "CollegeOrUniversity",
       "name": "University of Austin",
       "url": "https://uaustin.org"
@@ -53,43 +56,50 @@
     "email": "mailto:rollchase@gmail.com",
     "sameAs": [
       "https://x.com/thechaseroll",
-      "https://instagram.com/thechaseroll",
-      "https://linkedin.com/in/chaseroll"
+      "https://linkedin.com/in/chaseroll",
+      "https://instagram.com/thechaseroll"
     ]
+  }
+  </script>
+  <script type="speculationrules">
+  {
+    "prefetch": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }]
   }
   </script>
 </head>
 <body>
 
-  <main class="home wrap">
-
-    <div class="home-brand">
-      <h1>Chase Roll</h1>
-      <button type="button" class="theme-toggle" aria-label="Toggle color theme" title="Toggle color theme">◐</button>
+  <main class="home-main">
+    <div class="home-cover">
+      <img class="home-portrait" src="/portrait.jpg" alt="Chase Roll" width="450" height="537" fetchpriority="high" />
+      <div class="home-cover-text">
+      <div class="home-name-row">
+        <h1 class="home-name">Chase Roll</h1>
+        <button type="button" class="theme-toggle" aria-label="Toggle color theme" title="Toggle color theme">◐</button>
+      </div>
+      <p class="home-bio">I&rsquo;m 20 and a student at the <a href="https://uaustin.org">University of Austin</a>. Spending my time learning as much as I can and building along the way. Still early but big things to come.</p>
+      <nav class="home-nav" aria-label="site">
+        <a href="/resume/">resume</a>
+        <a href="/notes/">notes</a>
+        <a href="/contact/">contact</a>
+      </nav>
+      <nav class="home-socials" aria-label="social">
+        <a href="https://x.com/thechaseroll">x</a>
+        <a href="https://linkedin.com/in/chaseroll">linkedin</a>
+        <a href="https://instagram.com/thechaseroll">instagram</a>
+      </nav>
+      </div>
     </div>
-
-    <p class="home-bio">I&rsquo;m 19 and a student at the <a href="https://uaustin.org">University of Austin</a>. Spending my time learning as much as I can and building along the way. Still early but big things to come.</p>
-
-    <nav class="home-nav" aria-label="sections">
-      <a href="/resume/">resume</a>
-      <a href="/notes/">notes</a>
-      <a href="/contact/">contact</a>
-    </nav>
-
-    <div class="home-socials" aria-label="social">
-      <a href="https://x.com/thechaseroll">x</a>
-      <a href="https://instagram.com/thechaseroll">instagram</a>
-      <a href="https://linkedin.com/in/chaseroll">linkedin</a>
-    </div>
-
   </main>
 
-  <footer class="site-footer wrap">
-    <div class="footer-left">
-      <p>&copy; 2026 Chase Roll</p>
-      <p class="clock" aria-hidden="true"></p>
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <div class="footer-left">
+        <p class="copyright">&copy; 2026 Chase Roll</p>
+        <p class="clock" aria-hidden="true"></p>
+      </div>
+      <p class="reach"><a href="mailto:rollchase@gmail.com">reach out &mdash; rollchase@gmail.com</a></p>
     </div>
-    <p><a href="mailto:rollchase@gmail.com">reach out, rollchase@gmail.com</a></p>
   </footer>
 
 </body>

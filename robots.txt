@@ -1,4 +1,4 @@
 User-agent: *
-Allow: /
+Disallow: /notes/
 
 Sitemap: https://chaseroll.com/sitemap.xml

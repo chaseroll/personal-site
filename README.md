@@ -1,24 +1,70 @@
 # chaseroll.com
 
-Personal site. Five static HTML pages, one shared stylesheet, one small JS
-file. No framework, no build step, no dependencies.
+Personal site. Seven static HTML pages, one shared stylesheet, one small JS
+file, self-hosted fonts. No framework, no build step, no dependencies.
+
+## Design
+
+The original site's quiet materials — neutral near-white, one warm serif —
+carrying the editorial structure built during the redesign:
+
+- **Cormorant Garamond** (self-hosted, two woff2 files) — titles (one tier
+  site-wide, clamp 34–52px, incl. the home name), the header wordmark,
+  section headings, list titles; its *italic* is the voice for folio subs,
+  dates, roles, year labels, the clock, and home socials
+- **System serif** (New York / Charter / Georgia) — everything else: body
+  text and prose (16–16.5px), nav (15px lowercase), descriptions, tags,
+  captions, footer. No other font ships.
+
+Colors flow through tokens at the top of `styles.css`: light `#fafafa` /
+`#111111`, dark `#0a0a0a` / `#e5e5e5`, hairlines at 9% opacity, muted and
+faint as ink alphas, and a **red accent** — `#be0f28` in light,
+`#d9112a` in dark. Text selection is a translucent accent tint.
+
+The home page is its own thing — `.home-main`/`.home-cover`, the original
+splash (name with the bare `◐` toggle beside it, serif bio, lowercase
+`resume notes contact`, italic socials), with no header.
+
+Every inner page shares the same bones:
+
+1. `.masthead` — an in-flow header row (scrolls with the page, aligned to
+   the content gutters — deliberately NOT a pinned bar): the serif
+   `Chase Roll` wordmark, lowercase nav (`← home`, + `pdf` on resume),
+   and the bare `◐` toggle
+2. `.folio` — the title band, deliberately plain: the `.folio-title`,
+   one quiet italic `.folio-sub` line, and on essays an italic
+   `.folio-date`. No kickers, labels, or byline apparatus.
+3. `.article-band > .band-inner` — the page's content
+4. `.site-footer` — copyright + live clock, reach-out line
+
+Everything on every page — header, title band, content, footer, and the
+home cover — shares ONE column: `max-width: 48rem`, padding
+`clamp(24px, 4vw, 48px)`. One left edge site-wide.
+
+Essay pages additionally get scroll-reveal animations and an
+`.essay-footer` (lowercase `← all notes`). Signature interactions: list rows nudge 5px right on
+hover, links go accent, inline prose links carry an accent underline.
 
 ## Structure
 
 ```
 /
-├── index.html               splash  — name, bio, nav, socials
+├── index.html               home — the quiet splash (see above)
+├── 404.html                 not-found page (folio grammar)
 ├── styles.css               shared stylesheet (screen + print)
-├── theme.js                 theme toggle, clock, external-link decoration
-├── favicon.svg              "C" monogram, adapts to OS dark mode
-├── resume/
-│   └── index.html           Projects / Experience / Education / Other
-├── notes/
-│   ├── index.html           clipboard — year-grouped tagged items
-│   └── hello-world/
-│       └── index.html       sample note page (template for future notes)
-└── contact/
-    └── index.html           email + phone
+├── theme.js                 theme, links, clock, reading bar, scroll reveals
+├── fonts/                   self-hosted variable woff2 (latin subsets)
+├── favicon.svg              "C" mark, adapts to OS dark mode
+├── og-image.png             1200×630 social card
+├── apple-touch-icon.png     180×180 "C" icon
+├── _headers                 security + cache headers (Pages/Netlify)
+├── robots.txt, sitemap.xml
+├── resume/index.html        Projects / Experience / Education / Other
+├── notes/index.html         the notebook — numbered, year-grouped entries
+│   ├── hello-world/         short note (essay template, minimal)
+│   └── by-invitation-only/  full-length essay (all template components;
+│                            currently noindex'd stand-in prose)
+└── contact/index.html       email + phone
 ```
 
 ## Preview locally
@@ -28,30 +74,40 @@ python3 -m http.server 8000
 # http://localhost:8000
 ```
 
-Absolute asset paths (`/styles.css`, `/theme.js`, `/favicon.svg`) rely on a
-server root, so open via a dev server — opening `index.html` directly from the
-filesystem will break stylesheet loading.
+Absolute asset paths (`/styles.css`, `/fonts/…`) rely on a server root, so
+open via a dev server — opening `index.html` directly from the filesystem
+will break stylesheet and font loading.
+
+Stylesheet/JS links carry a cache-busting query (`styles.css?v=N`) — bump
+it on every styles.css or theme.js change.
 
 ## Deploy
 
-Push to GitHub and connect the repo to Cloudflare Pages / Vercel / Netlify.
-
-- No build command
-- No output directory
-- Pure static files
+Push to GitHub and connect the repo to Cloudflare Pages or Netlify (the
+`_headers` file is their format — Vercel would need the same rules ported
+to `vercel.json`). No build command, no output directory, pure static
+files. `_headers` sets security headers and long-cache for `/fonts/*`,
+`styles.css`/`theme.js` (safe because of the `?v=` stamps), and the icons.
 
 ## What's in `theme.js`
 
-One ~130-line IIFE handling three concerns:
+One small IIFE handling five concerns:
 
 1. **Theme** — reads `localStorage['chaseroll-theme']`, falls back to system
    preference, sets `data-theme="dark"` on `<html>`. Click the `◐` button to
-   toggle. Listens to `storage` events so multi-tab is always in sync.
+   toggle. Also keeps the `theme-color` metas, `color-scheme`, and the
+   toggle's label/title in sync, and listens to `storage`
+   events so multi-tab is always in sync.
 2. **External link decoration** — any `<a href="https://…">` pointing to a
    different hostname automatically gets `target="_blank"` and
    `rel="noopener noreferrer"`.
 3. **Live clock** — fills every `.clock` element with the current time in
    Central Time, updates every second.
+4. **Reading bar** — the 2px accent progress bar at the top of the two
+   article pages (no-op on pages without the element).
+5. **Scroll reveals** — elements with `.reveal` fade/rise in when they
+   enter the viewport (gated on the `js` class so no-JS keeps content
+   visible).
 
 Each HTML page also has a tiny inline `<script>` in its `<head>` that applies
 the theme synchronously before first paint — prevents any flash of wrong
@@ -59,75 +115,79 @@ theme on reload.
 
 ## Editing content
 
-### Add a resume entry (`resume/index.html`)
+### Publish a written note (essay)
 
-Inside the appropriate `<div class="entries">`, copy the template:
+Copy `notes/by-invitation-only/` (full template) or `notes/hello-world/`
+(minimal) to `notes/your-slug/` and edit:
 
-```html
-<article class="entry">
-  <div class="head">
-    <h3>Name</h3>
-    <span class="dates">Dates</span>
-  </div>
-  <p class="role">Role &middot; Location</p>
-  <p class="desc">Description.</p>
-  <div class="links">
-    <a href="https://…">Link &rarr;</a>
-  </div>
-</article>
-```
+- `<title>`, meta description, canonical URL, og/twitter tags (and remove
+  the `noindex` meta + fixture comment if copying by-invitation-only)
+- the `.folio-title` (essay title), the italic `.folio-sub` abstract,
+  and the `.folio-date` (Month Year)
+- body: `.prose` paragraphs; sections via `.essay-section-head` (an
+  italic `.essay-section-title` h2); `<blockquote>` for quotations
+  (optional trailing `<cite>Name</cite>` for attribution);
+  `.essay-fig` figures (use `<picture>` with a WebP source + JPEG
+  fallback, explicit `width`/`height`, `loading="lazy"`). That is the
+  whole essay vocabulary — paragraphs, links, quotes, section heads,
+  figures
+- keep `.reveal` classes on new blocks (hero blocks get `reveal visible`)
 
-Only Projects entries should have links (visual hierarchy — experience is
-context, projects are the things worth clicking into).
+Then add a list item in `notes/index.html` (see below) — new entries go
+on top. Numbers are automatic (a CSS counter), so nothing to renumber.
 
-### Add a note to the clipboard (`notes/index.html`)
+### Add an item to the notebook (`notes/index.html`)
 
 Inside the current year's `<div class="notes-list">`:
 
 ```html
 <a href="https://…">
-  <span>Title of the thing</span>
+  <span class="num" aria-hidden="true"></span>
+  <span class="title">Title of the thing</span>
   <span class="tag">Link</span>
 </a>
 ```
 
-Tags are auto-uppercased by CSS, so type `Link` / `PDF` / `X post` / etc.
+Tags are auto-uppercased by CSS, so type `Note` / `Essay` / `Link` / `PDF`.
+For a new year, prepend a new `<div class="year-group">` with an
+`<h2 class="notes-year">2027</h2>`.
 
-For a new year, prepend a new `<div class="year-group">`:
+### Add a resume entry (`resume/index.html`)
+
+Inside the appropriate `<div class="entries">`:
 
 ```html
-<div class="year-group">
-  <h2 class="notes-year">2027</h2>
-  <div class="notes-list">
-    <a href="…">…</a>
+<article class="entry">
+  <div class="head">
+    <h3><a href="https://…">Name <span class="ext" aria-hidden="true">&nearr;</span></a></h3>
+    <span class="dates">Start &ndash; End</span>
   </div>
-</div>
+  <p class="role">Role &middot; Location</p>
+  <p class="desc">Description.</p>
+</article>
 ```
 
-### Publish a written note
-
-Copy `notes/hello-world/` to `notes/your-slug/`, edit title, date, and the
-paragraphs inside `<div class="note-body">`. Then add a list item in
-`notes/index.html` with `href="/notes/your-slug/"` and `<span class="tag">Note</span>`.
+The title IS the link (with the small &nearr;) — no separate links row.
+Only Projects titles should link (experience is context, projects are the
+things worth clicking into). Entries still in progress can take
+`class="entry entry-draft"` to stay off the printed PDF.
 
 ## Resume PDF
 
 `/resume/` has a `pdf` button that calls `window.print()`. The print
 stylesheet (`@media print` in `styles.css`) formats it as a professional
-two-page resume with:
+one-to-two page resume: letter size, the `.print-only .print-head` (name +
+contact strip) replaces the screen chrome, theme forced to monochrome light,
+page-break avoidance inside entries. Other pages print their folio as the
+title block, and printed links expose their URLs. The PDF reflects the live
+resume — nothing to regenerate manually.
 
-- Letter size, 0.55" × 0.6" margins
-- Contact strip (email · phone · website) revealed only in print via
-  the `.print-only` utility class
-- Uppercase tracked section headings (resume convention)
-- Theme forced to light regardless of current site theme
-- Page-break avoidance inside entries
+## Fonts
 
-The PDF reflects the live resume — nothing to regenerate manually.
-
-## Theme tokens
-
-All colors flow through CSS custom properties in `:root` and
-`[data-theme="dark"]`. To re-theme the site, edit the token block at the
-top of `styles.css`. Grays follow Tailwind's 400/500/600/700 scale; `--fg`,
-`--bg`, and `--divider` define the rest.
+Latin-subset variable woff2 files self-hosted in `/fonts/`, declared in
+`styles.css` with `font-display: swap` and preloaded from each page's head.
+`/fonts/*` is cached immutable for a year — if a font file ever changes,
+give it a NEW filename (e.g. `cormorant.v2.woff2`) and update the
+`@font-face` src in styles.css plus every page's preload link. To
+re-download or add subsets, pull the css2 URLs from Google Fonts with a
+Chrome user-agent and fetch the `/* latin */` block's woff2 files.
