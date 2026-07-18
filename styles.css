@@ -73,8 +73,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   -webkit-tap-highlight-color: transparent;
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-height: calc(100vh / var(--z, 1));
+  min-height: calc(100dvh / var(--z, 1));
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
@@ -94,6 +94,15 @@ main { flex: 1 1 auto; }
   outline-offset: 3px;
   border-radius: 1px;
 }
+
+/* --- Large-display scale ---------------------------------------------------
+   Browser-zoom equivalent so big windows keep a laptop's proportions (the
+   composition was tuned at ~1440px; founder's Cmd+ x3 = 150% on a ~2000px
+   window, adopted as default). Tiers don't compound — media queries read
+   the real viewport width, and mobile/laptop stay untouched. */
+@media (min-width: 1500px) { html { zoom: 1.15; --z: 1.15; } }
+@media (min-width: 1700px) { html { zoom: 1.3;  --z: 1.3; } }
+@media (min-width: 1900px) { html { zoom: 1.5;  --z: 1.5; } }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
