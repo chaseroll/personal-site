@@ -2,8 +2,7 @@
    Loaded with `defer`; the tiny inline <script> in each page's <head> applies
    the initial theme before paint (no flash of wrong theme), and this file
    re-applies it to sync theme-color metas + toggle state. Concerns: theme
-   toggling, external-link decoration, the footer clock, and the
-   reading bar. */
+   toggling, external-link decoration, and the footer clock. */
 
 (function () {
   /* --- Theme --------------------------------------------------------- */
@@ -154,31 +153,9 @@
     }
   }
 
-  /* --- Reading progress bar (article pages only; no-op when the div is absent) --- */
-
-  function startReadingBar() {
-    var bar = document.querySelector('.reading-bar');
-    if (!bar) return;
-
-    var ticking = false;
-    function update() {
-      ticking = false;
-      var doc = document.documentElement;
-      var max = doc.scrollHeight - window.innerHeight;
-      var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-      bar.style.transform = 'scaleX(' + p + ')';
-    }
-    window.addEventListener('scroll', function () {
-      if (!ticking) { ticking = true; requestAnimationFrame(update); }
-    }, { passive: true });
-    window.addEventListener('resize', update);
-    update();
-  }
-
   onReady(function () {
     syncToggles(current());
     decorateLinks();
     startClock();
-    startReadingBar();
   });
 })();

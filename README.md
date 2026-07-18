@@ -52,7 +52,7 @@ hover, links go accent, inline prose links carry an accent underline.
 ├── index.html               home — the quiet splash (see above)
 ├── 404.html                 not-found page (folio grammar)
 ├── styles.css               shared stylesheet (screen + print)
-├── theme.js                 theme, links, clock, reading bar
+├── theme.js                 theme, links, clock
 ├── fonts/                   self-hosted variable woff2 (latin subsets)
 ├── favicon.svg              "C" mark, adapts to OS dark mode
 ├── og-image.png             1200×630 social card
@@ -107,7 +107,7 @@ for icons and images.
 
 ## What's in `theme.js`
 
-One small IIFE handling four concerns:
+One small IIFE handling three concerns:
 
 1. **Theme** — reads `localStorage['chaseroll-theme']`, falls back to system
    preference, sets `data-theme="dark"` on `<html>`. Click the `◐` button to
@@ -119,9 +119,6 @@ One small IIFE handling four concerns:
    `rel="noopener noreferrer"`.
 3. **Live clock** — fills every `.clock` element with the current time in
    Central Time, updates every second.
-4. **Reading bar** — the 2px accent progress bar at the top of the two
-   article pages (no-op on pages without the element).
-
 Each HTML page also has a tiny inline `<script>` in its `<head>` that applies
 the theme synchronously before first paint — prevents any flash of wrong
 theme on reload.

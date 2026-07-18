@@ -123,21 +123,6 @@ button {
   padding: 0;
 }
 
-/* --- Reading progress (the two article pages only; theme.js no-ops elsewhere) --- */
-
-.reading-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: 0;
-  will-change: transform;
-  z-index: 200;
-}
-
 /* --- Masthead (in-flow page header, inner pages) --------------------------------
    Not a pinned bar — it scrolls with the page (the original site's behavior,
    kept on the founder's call) and aligns to the folio's content gutters. */
@@ -746,7 +731,6 @@ html[data-locked] .year-group { display: none; }
      resume, where the .print-only .print-head replaces it. */
   .masthead,
   .site-footer,
-  .reading-bar,
   .theme-toggle { display: none; }
   body.resume .folio { display: none; }
 
