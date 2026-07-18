@@ -277,29 +277,6 @@ button {
   transition: color 0.18s var(--ease);
 }
 .prose a:hover { color: var(--accent); }
-/* A quotation, not a pull quote: borrowed voices sit apart but quieter than
-   the prose voice (entry-h3 tier). The <cite> line is optional — without it
-   the same element serves as a rare pull quote of the essay's own line. */
-.prose blockquote {
-  font-family: var(--font-d);
-  font-style: italic;
-  font-weight: 300;
-  font-size: clamp(17px, 1.8vw, 20px);
-  line-height: 1.5;
-  color: var(--text);
-  border-left: 2px solid var(--accent);
-  margin: 48px -4px;
-  padding: 10px 0 10px 28px;
-}
-.prose blockquote cite {
-  display: block;
-  margin-top: 12px;
-  font-family: var(--font-d);
-  font-style: italic;
-  font-size: 14px;
-  color: var(--faint);
-}
-.prose blockquote cite::before { content: "\2014\00a0"; }
 .prose figure { margin: 44px 0; }
 .prose img { max-width: 100%; height: auto; display: block; }
 .prose figcaption {
@@ -309,10 +286,6 @@ button {
   color: var(--faint);
   margin-top: 10px;
 }
-@media (max-width: 600px) {
-  .prose blockquote { margin: 36px 0; padding-left: 20px; }
-}
-
 /* --- Essay components (figures, sections) --------------------------------------- */
 
 /* .prose-scoped so these win over the generic `.prose figure` margins */

@@ -125,12 +125,10 @@ Copy `notes/by-invitation-only/` (full template) or `notes/hello-world/`
 - the `.folio-title` (essay title), the italic `.folio-sub` abstract,
   and the `.folio-date` (Month Year)
 - body: `.prose` paragraphs; sections via `.essay-section-head` (an
-  italic `.essay-section-title` h2); `<blockquote>` for quotations
-  (optional trailing `<cite>Name</cite>` for attribution);
-  `.essay-fig` figures (use `<picture>` with a WebP source + JPEG
-  fallback, explicit `width`/`height`, `loading="lazy"`). That is the
-  whole essay vocabulary — paragraphs, links, quotes, section heads,
-  figures
+  italic `.essay-section-title` h2); `.essay-fig` figures (use
+  `<picture>` with a WebP source + JPEG fallback, explicit
+  `width`/`height`, `loading="lazy"`). That is the whole essay
+  vocabulary — paragraphs, links, section heads, figures
 - keep `.reveal` classes on new blocks (hero blocks get `reveal visible`)
 
 Then add a list item in `notes/index.html` (see below) — new entries go
