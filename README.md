@@ -57,7 +57,7 @@ hover, links go accent, inline prose links carry an accent underline.
 ├── favicon.svg              "C" mark, adapts to OS dark mode
 ├── og-image.png             1200×630 social card
 ├── apple-touch-icon.png     180×180 "C" icon
-├── _headers                 security + cache headers (Pages/Netlify)
+├── vercel.json              security + cache headers (Vercel)
 ├── robots.txt, sitemap.xml
 ├── resume/index.html        Projects / Experience / Education / Other
 ├── notes/index.html         the notebook — numbered, year-grouped entries
