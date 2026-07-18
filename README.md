@@ -132,8 +132,8 @@ Copy `notes/by-invitation-only/` (full template) or `notes/hello-world/`
 
 - `<title>`, meta description, canonical URL, og/twitter tags (and remove
   the `noindex` meta + fixture comment if copying by-invitation-only)
-- the `.folio-title` (essay title), an OPTIONAL italic `.folio-sub` abstract,
-  and the `.folio-date` (Month Year)
+- the `.folio-title` (essay title) and the `.folio-date` (Month Year) —
+  no subtitle; the opening paragraph is the abstract
 - body: `.prose` paragraphs; sections via `.essay-section-head` (an
   italic `.essay-section-title` h2); `.essay-fig` figures (use
   `<picture>` with a WebP source + JPEG fallback, explicit
